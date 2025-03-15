@@ -17,7 +17,7 @@ This project is a comprehensive Node.js starter kit for building backend API mic
 ## Installation 🛠️
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/node-api-starter-kit.git
+   git clone https://github.com/nivkman/node-api-starter-kit.git
    ```
 2. Navigate to the project directory:
    ```
