@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node.js API Microservice Starter Kit</title>
+    <style>
+        :root {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-elevated: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent-primary: #3498db;
+            --accent-secondary: #2980b9;
+            --accent-tertiary: #4db6ff;
+            --success: #26a069;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --info: #3498db;
+            --border: #333333;
+            --code-bg: #2d2d30;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Enhanced Hero Section */
+        .hero {
+            position: relative;
+            background: linear-gradient(135deg, #121212 0%, #2d2d30 100%);
+            color: white;
+            padding: 80px 0;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(52, 152, 219, 0.1) 0%, rgba(52, 152, 219, 0) 45%), 
+                        radial-gradient(circle at 70% 30%, rgba(46, 204, 113, 0.1) 0%, rgba(46, 204, 113, 0) 45%);
+            z-index: 0;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            right: -50%;
+            bottom: -50%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%233498db' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.4;
+            z-index: 0;
+            animation: sweep 120s linear infinite;
+        }
+        
+        @keyframes sweep {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-tertiary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+        }
+        
+        .badge {
+            display: inline-block;
+            background-color: rgba(52, 152, 219, 0.15);
+            color: var(--accent-primary);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 50px;
+            padding: 5px 15px;
+            margin: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .hero-buttons {
+            margin-top: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-primary);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--accent-primary);
+            border: 1px solid var(--accent-primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: var(--bg-secondary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            overflow-x: auto;
+            padding: 0;
+            justify-content: center;
+        }
+        
+        nav ul li a {
+            display: block;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 15px 20px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent-primary);
+        }
+        
+        /* Main Content */
+        main {
+            padding: 40px 0;
+        }
+        
+        section {
+            margin-bottom: 60px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--accent-primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin: 25px 0 15px;
+            color: var(--text-primary);
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+        
+        pre {
+            background-color: var(--code-bg);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--accent-tertiary);
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-left: 25px;
+            color: var(--text-secondary);
+        }
+        
+        .api-endpoint {
+            background-color: var(--bg-elevated);
+            border-left: 4px solid var(--accent-primary);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 3px 8px;
+            margin-right: 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .get {
+            background-color: rgba(38, 160, 105, 0.2);
+            color: #26a069;
+        }
+        
+        .post {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+        
+        .put {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+        }
+        
+        .delete {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        
+        footer {
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid var(--border);
+        }
+        
+        /* For mobile devices */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .hero-buttons {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                margin: 10px 0;
+                width: 80%;
+                text-align: center;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+            }
+            
+            section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Node.js API Microservice Starter Kit 🚀</h1>
+            <p>A comprehensive foundation for building robust and scalable backend microservices</p>
+            <div>
+                <span class="badge">Express.js</span>
+                <span class="badge">MongoDB</span>
+                <span class="badge">Kafka</span>
+                <span class="badge">RESTful API</span>
+                <span class="badge">Modular</span>
+            </div>
+            <div class="hero-buttons">
+                <a href="#installation" class="btn btn-primary">Get Started</a>
+                <a href="#api" class="btn btn-secondary">API Docs</a>
+            </div>
+        </div>
+    </div>
+    
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#installation">Installation</a></li>
+            <li><a href="#configuration">Configuration</a></li>
+            <li><a href="#usage">Usage</a></li>
+            <li><a href="#structure">Structure</a></li>
+            <li><a href="#api">API</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#extending">Extending</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <main>
+            <section id="overview">
+                <h2>Overview 🌐</h2>
+                <p>This project is a comprehensive Node.js starter kit for building backend API microservices. It provides a solid foundation with a modular architecture, database integration, messaging system, and RESTful API endpoints, allowing developers to quickly bootstrap and develop robust microservices for various business domains.</p>
+            </section>
+            
+            <section id="features">
+                <h2>Features ✨</h2>
+                <ul>
+                    <li>RESTful API architecture with Express.js</li>
+                    <li>MongoDB integration using Mongoose ODM</li>
+                    <li>Kafka/Redpanda integration for event-driven architecture</li>
+                    <li>Structured logging system</li>
+                    <li>CORS support for cross-origin requests</li>
+                    <li>Comprehensive error handling</li>
+                    <li>Cron job scheduling</li>
+                    <li>Environment-based configuration</li>
+                    <li>Modular project structure</li>
+                </ul>
+            </section>
+            
+            <section id="installation">
+                <h2>Installation 🛠️</h2>
+                <ol>
+                    <li>
+                        Clone the repository:
+                        <pre><code>git clone https://github.com/yourusername/node-api-starter-kit.git</code></pre>
+                    </li>
+                    <li>
+                        Navigate to the project directory:
+                        <pre><code>cd node-api-starter-kit</code></pre>
+                    </li>
+                    <li>
+                        Install dependencies:
+                        <pre><code>npm install</code></pre>
+                    </li>
+                </ol>
+                <p><strong>Note:</strong> Ensure you have Node.js (v14.x or later) and npm installed on your system before proceeding with the installation.</p>
+            </section>
+            
+            <section id="configuration">
+                <h2>Configuration ⚙️</h2>
+                <ol>
+                    <li>Create a <code>.env</code> file in the root directory</li>
+                    <li>
+                        Add the following environment variables:
+                        <pre><code>DATABASEURL=mongodb://localhost:27017
+PORT=9090
+SERVICE=MyNewService
+KAFKA_BROKER_ADDRESS=localhost:9092
+KAFKA_BROKER_ADDRESS_PROD=redpanda:29092
+GROUP_ID=my-service-group
+TOPIC=lce.pipeline
+GROUP_TYPE=service-type</code></pre>
+                    </li>
+                </ol>
+                <p><strong>Note:</strong></p>
+                <ul>
+                    <li>For local development, use <code>KAFKA_BROKER_ADDRESS</code>.</li>
+                    <li>For production, use <code>KAFKA_BROKER_ADDRESS_PROD</code>.</li>
+                    <li>Customize <code>SERVICE</code>, <code>GROUP_ID</code>, and <code>GROUP_TYPE</code> based on your specific microservice requirements.</li>
+                </ul>
+            </section>
+            
+            <section id="usage">
+                <h2>Usage 🚀</h2>
+                <p>To start the server:</p>
+                <pre><code>npm start</code></pre>
+                <p>The API will be available at <code>http://localhost:9090</code> (or the port you specified in your .env file).</p>
+            </section>
+            
+            <section id="structure">
+                <h2>Project Structure 📂</h2>
+                <pre><code>.
+├── src/
+│   ├── config/         # Configuration files
+│   ├── cron/           # Scheduled tasks
+│   ├── messaging/      # Kafka message handlers
+│   ├── models/         # Database models
+│   ├── routes/         # API route definitions
+│   ├── services/       # Business logic
+│   └── index.js        # Main application entry point
+├── .env                # Environment variables (create this)
+├── .gitignore
+├── package.json
+└── README.md</code></pre>
+            </section>
+            
+            <section id="api">
+                <h2>API Documentation 📚</h2>
+                
+                <h3>Endpoints 🛣️</h3>
+                
+                <div class="api-endpoint">
+                    <h4><span class="method get">GET</span> Health Check 💓</h4>
+                    <p><strong>Path:</strong> <code>/api/v1/health</code></p>
+                    <p><strong>Description:</strong> Check the health status of the API</p>
+                    <p><strong>Response:</strong> "health checked successfully"</p>
+                </div>
+                
+                <div class="api-endpoint">
+                    <h4><span class="method get">GET</span> Get All Resources 📋</h4>
+                    <p><strong>Path:</strong> <code>/api/v1/</code></p>
+                    <p><strong>Description:</strong> Retrieve all resources based on provided filters</p>
+                    <p><strong>Query Parameters:</strong></p>
+                    <ul>
+                        <li><code>filter</code>: JSON string for filtering resources</li>
+                        <li><code>limit</code>: Number of resources to retrieve (default: 25)</li>
+                        <li><code>skip</code>: Number of resources to skip (for pagination)</li>
+                        <li><code>sort</code>: Sorting criteria</li>
+                    </ul>
+                    <p><strong>Response:</strong> JSON array of resource objects</p>
+                </div>
+                
+                <div class="api-endpoint">
+                    <h4><span class="method get">GET</span> Get Resource by ID 🔍</h4>
+                    <p><strong>Path:</strong> <code>/api/v1/:id</code></p>
+                    <p><strong>Description:</strong> Retrieve a specific resource by its ID</p>
+                    <p><strong>Response:</strong> JSON object of the resource</p>
+                </div>
+                
+                <div class="api-endpoint">
+                    <h4><span class="method post">POST</span> Create New Resource ➕</h4>
+                    <p><strong>Path:</strong> <code>/api/v1/</code></p>
+                    <p><strong>Description:</strong> Create a new resource</p>
+                    <p><strong>Request Body:</strong> Resource details</p>
+                    <p><strong>Response:</strong> JSON object of the created resource</p>
+                </div>
+                
+                <div class="api-endpoint">
+                    <h4><span class="method put">PUT</span> Update Resource 🔄</h4>
+                    <p><strong>Path:</strong> <code>/api/v1/:id</code></p>
+                    <p><strong>Description:</strong> Update an existing resource</p>
+                    <p><strong>Request Body:</strong> Updated resource details</p>
+                    <p><strong>Response:</strong> JSON object of the updated resource</p>
+                </div>
+                
+                <div class="api-endpoint">
+                    <h4><span class="method delete">DELETE</span> Delete Resource ❌</h4>
+                    <p><strong>Path:</strong> <code>/api/v1/:id</code></p>
+                    <p><strong>Description:</strong> Delete a resource by its ID</p>
+                    <p><strong>Response:</strong> JSON object with the deleted resource ID</p>
+                </div>
+                
+                <h3>Error Handling ⚠️</h3>
+                <p>All endpoints include error handling. In case of an error, the service logs the error message using the structured logging system. You can extend this to emit corresponding failure events through Kafka if needed.</p>
+            </section>
+            
+            <section id="architecture">
+                <h2>Architecture 🏗️</h2>
+                <p>The application follows a modular architecture:</p>
+                <ul>
+                    <li>Express.js for the web server 🌐</li>
+                    <li>MongoDB for data storage (using Mongoose ODM) 🗄️</li>
+                    <li>Kafka or Redpanda for event-driven messaging 📨</li>
+                    <li>Custom logging system 📝</li>
+                    <li>Node-cron for scheduled tasks ⏰</li>
+                </ul>
+                
+                <h3>Service Layer 🛠️</h3>
+                <p>The service layer handles all business logic and database operations:</p>
+                <ul>
+                    <li>Retrieving resources with filtering, pagination, and sorting</li>
+                    <li>Creating new resources</li>
+                    <li>Updating existing resources</li>
+                    <li>Deleting resources</li>
+                </ul>
+                <p>It interacts with the MongoDB database through the Mongoose models and can be extended to emit events to Kafka for important lifecycle events.</p>
+            </section>
+            
+            <section id="extending">
+                <h2>Extending the Starter Kit 🔧</h2>
+                
+                <h3>Adding a New Model</h3>
+                <ol>
+                    <li>Create a new model file in <code>src/models/</code></li>
+                    <li>Define your schema and export your model</li>
+                    <li>Import and use it in your service layer</li>
+                </ol>
+                
+                <h3>Adding a New Service</h3>
+                <ol>
+                    <li>Create a new service file in <code>src/services/</code></li>
+                    <li>Implement the necessary methods for your business logic</li>
+                    <li>Instantiate and use it in your route handlers</li>
+                </ol>
+                
+                <h3>Implementing Event-Driven Architecture</h3>
+                <ol>
+                    <li>Uncomment the Kafka initialization in <code>src/index.js</code></li>
+                    <li>Define your events and handlers in <code>src/messaging/</code></li>
+                    <li>Emit events from your services when needed</li>
+                </ol>
+            </section>
+        </main>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Happy coding! 💻✨</p>
+            <p>© 2025 Node.js API Microservice Starter Kit</p>
+        </div>
+    </footer>
+</body>
+</html>
