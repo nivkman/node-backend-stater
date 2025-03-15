@@ -39,9 +39,9 @@ Note: Ensure you have Node.js (v14.x or later) and npm installed on your system 
    SERVICE=MyNewService
    KAFKA_BROKER_ADDRESS=localhost:9092
    KAFKA_BROKER_ADDRESS_PROD=redpanda:29092
-   GROUP_ID=my-service-group
-   TOPIC=lce.pipeline
-   GROUP_TYPE=service-type
+   GROUP_ID=my_group_id
+   TOPIC=my_topic.pipeline
+   GROUP_TYPE=my_group_type
    ```
 
    Note: 
